@@ -1,75 +1,69 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <sstream>
+#include <string>
 using namespace std;
 
-bool check_repeat(vector<string> list, string sym){
-    for(int tmp =0; tmp < list.size(); tmp++){
-        if(list[tmp]==sym){
-            return false;
+int checkp(vector<string> sample){
+    int head = 0;
+    int tail = sample.size()-1;
+    for(int tmp = sample.size()/2; tmp >0; tmp --){
+        if(sample[head] != sample[tail]){
+            return 0;
         }
+        head++;
+        tail--;
     }
-    return true;
+    return sample.size();
 }
 
-void StoreDiscard(vector<string> & list, string& bag){
-    ostringstream ss;
-    for(int tmp =0; tmp< list.size(); tmp++){
-        ss << list[tmp];
+void copy_vector(vector<string> sample, vector<string> &out){
+    for(int tmp =0; tmp<sample.size(); tmp++){
+        out.push_back({sample[tmp]});
     }
-    bag = ss.str();
-    list.clear();
+    return;
 }
 
-int main()
-{
-    string l;
-    getline(cin,l);
-    cout << l << endl;
-    
-    vector<string> list;
-    string record;
-    int length=0;
-    int loest;
-    
-    string tmps;
-    
-    for(int tmp=0; tmp < l.length(); tmp++){
-        ostringstream ss;
-        ss << l[tmp];
-        tmps = ss.str();
-        //tmps=l[tmp].c_str();
-        if(check_repeat(list,tmps)){
-            list.push_back({l[tmp]});
-            length ++;
-        }else{
-            if(list.size() > loest){
-                StoreDiscard(list,record);
-                loest = length;
-                length = 0;
-            }else{
-                list.clear();
-                length =0;
+
+void loop(string line, int& maxlen, vector<string>& out){
+    if(!line.empty()){
+        vector<string> sample;
+        int record;
+           for(int tmp = line.length(); tmp >0; tmp--){
+                sample.push_back({line[tmp-1]});
+                if((record=checkp(sample))!=0){
+                    if(record >maxlen){
+                        maxlen = record;
+                        //copy new longest sample into longest;
+                        out.clear();
+                        copy_vector(sample,out);
+                    }
+                }
             }
-        }
+            line.erase(line.length()-1);
+            sample.clear();
+            loop(line,maxlen,out);
+            return;
+    }else{
+        return;
     }
+}
+
+
+int main(){
+    int y = 10.88;
+    cout << y << endl;
+    string line;
+    getline(cin,line);
+    vector<string> longest;
+    int num=0;
+    loop(line,num,longest);
     
-    cout << record <<endl;
+    cout << "longest pal has length of :" << num << endl;
+    for(int tmp=0; tmp < longest.size(); tmp++){
+        cout << longest[tmp];
+    }
+    cout<< endl;
     
-    /*
-    vector <string> t;
-    t.push_back("1");
-    t.push_back("2");
-    t.push_back("3");
-    t.push_back("4");
-    string tt;
-    StoreDiscard(t,tt);
-    cout<< tt << endl;
-    */
-    
-    
-   cout << "Hello World" << endl; 
-   
-   return 0;
+    cout<<"life is lonly";
+    return 0;
 }
